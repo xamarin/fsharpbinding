@@ -4,6 +4,9 @@ This fork contains a handful of fixes that work with MonoDevelop 4.0/Xamarin Stu
 
 Once it is published, we will upstream these changes.
 
+All of the changes here are under the same license as the original fsharpbinding code
+so feel free to take the code and land it on the upstream package.
+
 # F# Language Support for Open Editors
 
 This project contains advanced editing support for F# for a number of open editors
