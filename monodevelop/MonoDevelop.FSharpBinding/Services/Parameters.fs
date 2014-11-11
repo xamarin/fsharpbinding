@@ -7,10 +7,11 @@ namespace MonoDevelop.FSharp
 
 open MonoDevelop.Projects
 open MonoDevelop.Core.Serialization
+open MonoDevelop.Projects.Formats.MSBuild
 
 /// Serializable type respresnting F# compiler parameters
 type FSharpCompilerParameters() as this = 
-  inherit ConfigurationParameters()
+  inherit DotNetCompilerParameters()
   let asBool (s:string) = (System.String.Compare(s, "true", System.StringComparison.InvariantCultureIgnoreCase) = 0)
   let asString (b:bool) = if b then "true" else "false"
    
@@ -100,3 +101,11 @@ type FSharpCompilerParameters() as this =
   member x.PlatformTarget
     with get() = if x.platformTarget = null then "anycpu" else x.platformTarget
     and set(value) = x.platformTarget <- value
+
+  override x.Write (pset:IMSBuildPropertySet, format:MSBuildFileFormat) =
+    base.Write(pset, format);
+    pset.WriteObjectProperties (this, typedefof<FSharpCompilerParameters>);
+
+  override x.Read (pset:IMSBuildPropertySet, format:MSBuildFileFormat) =
+    base.Read (pset, format);
+    pset.ReadObjectProperties (this, typedefof<FSharpCompilerParameters>);

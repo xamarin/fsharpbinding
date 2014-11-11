@@ -293,7 +293,7 @@ type MDLanguageService() =
                         if doc <> null && doc.FileName.FullPath.ToString() = changedfile then
                             LoggingService.LogInfo(sprintf "FSharp Language Service: Compiler requesting reparse of document '%s'." (Path.GetFileName changedfile))
                             doc.ReparseDocument()
-                    with exn  -> () )))
+                    with exn  -> () ).Wait()))
 
   static member Instance with get () = instance.Force ()
                          and  set v  = instance <- lazy v

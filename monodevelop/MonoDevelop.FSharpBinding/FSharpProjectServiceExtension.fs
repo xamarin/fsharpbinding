@@ -9,7 +9,7 @@ open MonoDevelop.Projects
 type FSharpProjectServiceExtension() =
   inherit ProjectServiceExtension()
 
-  override x.SupportsItem(item:IBuildTarget) =
+  override x.SupportsItem(item:WorkspaceObject) =
     // Extend any F# project
     (item :? DotNetProject) && (item :?> DotNetProject).LanguageName = "F#"
 

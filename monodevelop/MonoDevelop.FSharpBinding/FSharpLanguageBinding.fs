@@ -16,16 +16,17 @@ open MonoDevelop.Projects.Formats.MSBuild
 
 
 type CorrectGuidMSBuildExtension() =
-    inherit MSBuildExtension()
+    inherit DotNetProjectExtension()
 
-    override x.SaveProject (monitor, item, project) =
+    override x.OnWriteProject (monitor, msproject) =
         try
+            base.OnWriteProject (monitor, msproject)
             let fsimportExists =
-                project.Imports
+                msproject.Imports
                 |> Seq.exists (fun import -> import.Project.EndsWith ("FSharp.Targets", StringComparison.OrdinalIgnoreCase))
 
             if fsimportExists then
-                project.GetGlobalPropertyGroup().Properties
+                msproject.GetGlobalPropertyGroup().Properties
                 |> Seq.tryFind (fun p -> p.Name = "ProjectTypeGuids")
                 |> Option.iter
                     (fun guids ->
@@ -97,7 +98,7 @@ type FSharpLanguageBinding() =
     override x.Compile(items, config, configSel, monitor) : BuildResult =
       CompilerService.Compile(items, config, configSel, monitor)
 
-    override x.CreateCompilationParameters(options:XmlElement) : ConfigurationParameters =
+    override x.CreateCompilationParameters(options:XmlElement) : DotNetCompilerParameters =
     
       // Debug.tracef "Config" "Creating compiler configuration parameters"
       let pars = new FSharpCompilerParameters() 
@@ -121,12 +122,9 @@ type FSharpLanguageBinding() =
       // TODO: set up the documentation file to be AssemblyName.xml by default (but how do we get AssemblyName here?)
       // pars.DocumentationFile <- ""
       //    System.IO.Path.GetFileNameWithoutExtension(config.CompiledOutputName.ToString())+".xml" 
-      pars :> ConfigurationParameters
+      pars :> DotNetCompilerParameters
 
 
-    override x.CreateProjectParameters(options:XmlElement) : ProjectParameters =
-      ProjectParameters()
-      
     override x.GetCodeDomProvider() : CodeDomProvider =
         // TODO: Simplify CodeDom provider to generate reasonable template
         // files at least for some MonoDevelop project types. Then we can recover:

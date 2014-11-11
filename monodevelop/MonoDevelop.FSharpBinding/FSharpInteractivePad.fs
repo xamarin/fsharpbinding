@@ -70,8 +70,8 @@ type FSharpInteractivePad() =
   let setupSession() =
     try
         let ses = InteractiveSession()
-        let textReceived = ses.TextReceived.Subscribe(fun t -> DispatchService.GuiDispatch(fun () -> view.WriteOutput t ))
-        let promptReady = ses.PromptReady.Subscribe(fun () -> DispatchService.GuiDispatch(fun () -> view.Prompt true ))
+        let textReceived = ses.TextReceived.Subscribe(fun t -> DispatchService.GuiDispatch(fun () -> view.WriteOutput t ).Wait())
+        let promptReady = ses.PromptReady.Subscribe(fun () -> DispatchService.GuiDispatch(fun () -> view.Prompt true ).Wait())
         ses.Exited.Add(fun e -> 
           textReceived.Dispose()
           promptReady.Dispose()
@@ -81,7 +81,7 @@ type FSharpInteractivePad() =
               view.WriteOutput("\nSession termination detected. Press Enter to restart."))
             isPrompting <- true
           elif killIntent = Restart then 
-            DispatchService.GuiDispatch view.Clear
+            DispatchService.GuiDispatch(fun () -> view.Clear()).Wait()
           killIntent <- NoIntent)
         ses.StartReceiving()
         // Make sure we're in the correct directory after a start/restart. No ActiveDocument event then.
