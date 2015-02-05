@@ -17,7 +17,7 @@ type CompilerArgumentsTests() =
     [<Test>]
     member x.``Only mscorlib referenced`` (assemblyName:string) =
 
-        use testProject = new DotNetAssemblyProject() :> DotNetProject
+        use testProject = Services.ProjectService.CreateDotNetProject ("F#")
         let assemblyName = match assemblyName with Fqn a -> fromFqn a | File a -> a
         let _ = testProject.AddReference assemblyName
         let references = 
@@ -41,7 +41,7 @@ type CompilerArgumentsTests() =
     [<Test>]
     member x.``Only FSharp.Core referenced`` (assemblyName:string) =
 
-        use testProject = new DotNetAssemblyProject() :> DotNetProject
+        use testProject = Services.ProjectService.CreateDotNetProject ("F#")
         let assemblyName = match assemblyName with Fqn a -> fromFqn a | File a -> a
         let reference = testProject.AddReference assemblyName
         let references = 
@@ -56,7 +56,7 @@ type CompilerArgumentsTests() =
 
         //find the mscorlib inside the FSharp.Core ref
         let mscorlibContained =
-            let assemblyDef = Mono.Cecil.AssemblyDefinition.ReadAssembly(reference.HintPath)
+            let assemblyDef = Mono.Cecil.AssemblyDefinition.ReadAssembly(reference.HintPath.ToString())
             match assemblyDef.MainModule.AssemblyReferences |> Seq.tryFind (fun name -> name.Name = "mscorlib") with
             |Some name ->
                 let resolved = assemblyDef.MainModule.AssemblyResolver.Resolve(name)

@@ -28,7 +28,9 @@ let b = (fun a ->
         let workbenchWindow = TestWorkbenchWindow()
         let viewContent = new TestViewContent()
 
-        let project = new DotNetAssemblyProject ("F#", Name="test", FileName = FilePath("test.fsproj"))
+        let project = Services.ProjectService.CreateDotNetProject ("F#")
+        project.Name <- "test"
+        project.FileName <- FilePath("test.fsproj")
         let projectConfig = project.AddNewConfiguration("Debug")
 
         TypeSystemService.LoadProject (project) |> ignore

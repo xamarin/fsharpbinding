@@ -26,7 +26,7 @@ type CorrectGuidMSBuildExtension() =
                 |> Seq.exists (fun import -> import.Project.EndsWith ("FSharp.Targets", StringComparison.OrdinalIgnoreCase))
 
             if fsimportExists then
-                msproject.GetGlobalPropertyGroup().Properties
+                msproject.GetGlobalPropertyGroup().GetProperties()
                 |> Seq.tryFind (fun p -> p.Name = "ProjectTypeGuids")
                 |> Option.iter
                     (fun guids ->
