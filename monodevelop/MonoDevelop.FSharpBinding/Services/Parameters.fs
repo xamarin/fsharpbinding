@@ -102,10 +102,10 @@ type FSharpCompilerParameters() as this =
     with get() = if x.platformTarget = null then "anycpu" else x.platformTarget
     and set(value) = x.platformTarget <- value
 
-  override x.Write (pset:IPropertySet, format:MSBuildFileFormat) =
-    base.Write(pset, format);
+  override x.Write (pset:IPropertySet, toolsVersion:string) =
+    base.Write(pset, toolsVersion);
     pset.WriteObjectProperties (this, typedefof<FSharpCompilerParameters>);
 
-  override x.Read (pset:IPropertySet, format:MSBuildFileFormat) =
-    base.Read (pset, format);
+  override x.Read (pset:IPropertySet, toolsVersion:string) =
+    base.Read (pset, toolsVersion);
     pset.ReadObjectProperties (this, typedefof<FSharpCompilerParameters>);
